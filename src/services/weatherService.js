@@ -15,26 +15,53 @@ const getWeatherByCity = async (city) => {
         });
         const rawData = response.data;
         console.log("response", response);
-        // AQUÍ formateamos los datos para cumplir tus requisitos
         return {
             location: {
                 city: rawData.location.name,
+                region: rawData.location.region,
                 country: rawData.location.country,
-                localtime: rawData.location.localtime
+                localtime: rawData.location.localtime,
+                timezone: rawData.location.tz_id,
+                lat: rawData.location.lat,
+                lon: rawData.location.lon
             },
+
             current: {
                 temp_c: rawData.current.temp_c,
-                condition: rawData.current.condition.text,
-                // ... resto de campos mapeados
+                feelslike_c: rawData.current.feelslike_c,
+                condition_text: rawData.current.condition.text,
+                condition_icon: rawData.current.condition.icon,
+                wind_kph: rawData.current.wind_kph,
+                wind_dir: rawData.current.wind_dir,
+                humidity: rawData.current.humidity,
+                pressure_mb: rawData.current.pressure_mb,
+                cloud: rawData.current.cloud,
+                visibility_km: rawData.current.vis_km
             },
+
             forecast: {
-                max: rawData.forecast.forecastday[0].day.maxtemp_c,
-                min: rawData.forecast.forecastday[0].day.mintemp_c
+                max_temp_c: rawData.forecast.forecastday[0].day.maxtemp_c,
+                min_temp_c: rawData.forecast.forecastday[0].day.mintemp_c,
+                sunrise: rawData.forecast.forecastday[0].astro.sunrise,
+                sunset: rawData.forecast.forecastday[0].astro.sunset
             }
         };
 
+
     } catch (error) {
-        throw new Error("Error obteniendo datos del clima");
+        if (error.response && error.response.data && error.response.data.error) {
+            const apiErr = error.response.data.error;
+            throw {
+                isWeatherApiError: true,
+                code: apiErr.code,
+                message: apiErr.message
+            };
+        }
+        throw {
+            isWeatherApiError: false,
+            code: 500,
+            message: "Error interno obteniendo el clima"
+        };
     }
 };
 
