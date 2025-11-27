@@ -8,7 +8,6 @@ const getWeather = async (req, res) => {
             return res.status(400).json({ error: "Falta el parámetro 'city'" });
         }
 
-        // Llama al servicio (la lógica real)
         const data = await weatherService.getWeatherByCity(city);
         
         res.status(200).json({ success: true, data });

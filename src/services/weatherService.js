@@ -14,7 +14,7 @@ const getWeatherByCity = async (city) => {
             }
         });
         const rawData = response.data;
-        console.log("response", response);
+
         return {
             location: {
                 city: rawData.location.name,
